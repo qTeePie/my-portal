@@ -3,11 +3,7 @@ docs.a2zblocks.com            → documentation portal
 demo.a2zblocks.com            → live UI demos
 ------------
 
-Instead of opening new tab immediately when user clicks a demo card, you could do:
-
-- click → small modal preview
-- modal has ▶ Launch Full Demo button
-- that button opens new tab
-
-This is a “wow moment UX”, but not necessary right now.
-
+monorepo basics
+pnpm workspace tutorial
+turborepo example
+vercel monorepo deploy

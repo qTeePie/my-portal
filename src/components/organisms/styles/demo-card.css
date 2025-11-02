@@ -1,0 +1,77 @@
+/* ---- Hover Effects / Glow / Motion (NOT layout) ---- */
+
+.demo-card {
+  transition: border-color 240ms ease, box-shadow 240ms ease, transform 240ms ease;
+}
+
+.demo-card:hover {
+  transform: scale(1.02);
+  border-color: rgba(170, 180, 255, 0.28);
+  box-shadow: 0 0 28px rgba(85, 120, 200, 0.26);
+}
+
+/* Tag fade */
+.demo-card__tag {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(160, 180, 255, 0.55);
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.demo-card:hover .demo-card__tag {
+  opacity: 0;
+  transform: translateY(-3px);
+}
+
+/* Backlight */
+.demo-card__backlight {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% -30%,
+    rgba(90, 120, 255, 0.12),
+    transparent 60%
+  );
+  transition: opacity 320ms ease;
+}
+
+.demo-card:hover .demo-card__backlight {
+  opacity: 0.55;
+}
+
+/* Icon scale */
+.demo-card__icon {
+  transition: transform 260ms ease;
+}
+
+.demo-card:hover .demo-card__icon {
+  transform: scale(1.07);
+}
+
+/* Button fade */
+.demo-card__btn {
+  opacity: 0;
+  transition: opacity 240ms ease;
+  border: 1px solid rgba(120, 130, 255, 0.18);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.demo-card:hover .demo-card__btn {
+  opacity: 1;
+}
+
+.demo-card__btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(160, 170, 255, 0.32);
+}
+
+.demo-card__btn:active {
+  transform: scale(0.97);
+}

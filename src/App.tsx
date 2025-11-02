@@ -1,19 +1,22 @@
-import "./App.css";
 import blockSvg from "@/assets/icons/blocks.svg";
+import { DemoCard } from "./components/organisms/DemoCard";
 
 const demos = [
   {
     id: "royalty-nft",
-    title: "Royalty-Enforced NFT",
-    desc: "On-chain marketplace enforcement demo.",
+    img: "nft",
+    title: "YUL Mini721",
+    desc: "Minimal NFT in pure yul.",
   },
   {
     id: "swap-ui",
-    title: "Minimal Swap UI",
-    desc: "Uniswap V2 contract interaction demo.",
+    img: "architecture",
+    title: "On-Chain Ecosystem",
+    desc: "Web3 design patterns.",
   },
   {
     id: "onchain-voting",
+    img: "nft",
     title: "On-Chain Voting",
     desc: "Lightweight DAO governance example.",
   },
@@ -36,9 +39,6 @@ export default function App() {
           <div className="flex gap-6 text-sm">
             <a href="#" className="ink">
               About
-            </a>
-            <a href="#" className="ink">
-              Solutions
             </a>
             <a href="#" className="ink">
               Contact
@@ -65,7 +65,7 @@ export default function App() {
               <button className="btn btn-primary mt-6">Check Demos</button>
             </div>
 
-            <div className="lg:w-1/2 text-center svg-neon">
+            <div className="lg:w-1/2 text-center">
               <img
                 src={blockSvg}
                 alt="block visual"
@@ -83,28 +83,13 @@ export default function App() {
 
           <div
             className="
-              grid grid-cols-1 md:grid-cols-3 gap-4 
-              border border-neutral-800 rounded-xl p-6
-              bg-black/20 backdrop-blur-sm
-            "
+                grid grid-cols-1 md:grid-cols-3 gap-4
+                border border-neutral-800 rounded-xl p-6
+                bg-black/20 backdrop-blur-sm
+              "
           >
             {demos.map((demo) => (
-              <div
-                key={demo.id}
-                className="border border-neutral-800 rounded-lg p-4 flex flex-col justify-between bg-neutral-900/40"
-              >
-                <div>
-                  <h3 className="text-lg font-semibold">{demo.title}</h3>
-                  <p className="text-sm text-dim mt-1">{demo.desc}</p>
-                </div>
-
-                <button
-                  className="btn btn-primary mt-4"
-                  onClick={() => alert(`open modal for ${demo.id}`)}
-                >
-                  View Demo
-                </button>
-              </div>
+              <DemoCard key={demo.id} {...demo} />
             ))}
           </div>
         </section>
