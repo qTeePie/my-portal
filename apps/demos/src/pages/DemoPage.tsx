@@ -1,4 +1,4 @@
-//import { useEffect } from "react";
+import { useState } from "react";
 
 import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
@@ -9,12 +9,11 @@ import { useMint } from "../web3/hooks/mini721/write";
 
 import { demos } from "../data/demos";
 import { DemoLayout } from "../components/layouts/DemoLayout";
+import { MintNFTDisplay } from "../components/MintNFTDisplay"
+import { Modal } from "../components/Modal"
 
 export const DemoPage = () => {
   const { address, isConnected } = useAccount();
-
-  const { mint, status } = useMint();
-  const { readTotalSupply, totalSupply } = useTotalSupply();
 
   const { demoId } = useParams();
   const demo = demos.find((d) => d.id === demoId);
@@ -25,13 +24,18 @@ export const DemoPage = () => {
     );
   }
 
-  if (!isConnected) {
+  if (!isConnected  || !address) {
     return <p className="text-center mt-10">Please connect a wallet first.</p>;
   }
 
+  const { mint, status } = useMint(address);
+  const { readTotalSupply, totalSupply } = useTotalSupply();
+  
+  const [showMintModal, setShowMintModal] = useState(true);
   const svg = useSvg();
 
   return (
+    <>
     <DemoLayout
       title={demo.title}
       desc={demo.desc}
@@ -39,12 +43,12 @@ export const DemoPage = () => {
       repoUrl="https://github.com/a2zblocks/example"
       contractUrl="https://etherscan.io/address/0x123"
     >
-      <div className="flex flex-col items-center gap-8">
+      <div className="flex flex-col items-center mt-2 gap-8">
         {/* Actinon Buttons */}
         <div className="flex justify-center gap-4">
           <button
             disabled={status === "pending"}
-            onClick={() => mint(address)}
+            onClick={() => setShowMintModal(true)}
             className="btn btn-primary"
           >
             Mint NFT
@@ -54,12 +58,19 @@ export const DemoPage = () => {
           </button>
           <button className="btn btn-primary">Owner Of #ID</button>
         </div>
+        <div className="
+          w-80 h-80
+          flex flex-col justify-center items-center 
+          border border-soft rounded-lg
+          ">
+          <MintNFTDisplay />
+        </div>
         {/* NFT Preview*/}
         <div
           className="
           w-80 
           flex flex-col justify-center items-center 
-          border border-subtle rounded-lg
+          border border-soft rounded-lg
         "
         >
           {!svg ? <p>Loading SVG...</p> : <img src={svg} alt="NFT preview" />}
@@ -96,5 +107,10 @@ export const DemoPage = () => {
         </div>
       </div>
     </DemoLayout>
+
+    <Modal isOpen={showMintModal} onClose={() => setShowMintModal(false)}>
+      <MintNFTDisplay />
+    </Modal>
+    </>
   );
 };

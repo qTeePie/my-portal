@@ -1,58 +1,93 @@
 @import "tailwindcss";
 
-/* ------------------------------
-   Tailwind v4 theme extensions
----------------------------------*/
+/* -------------------------------------------------
+   TAILWIND THEME — semantic design tokens
+   (all of these are real Tailwind classes)
+---------------------------------------------------*/
 @theme {
-  /* Dark blue / purple-black palette */
+  /* SEMANTIC COLORS (UI tokens) */
+  --color-primary: var(--bg-primary);          /* page background */
+  --color-secondary: var(--bg-secondary);      /* panels/cards */
+  --color-surface: var(--bg-surface);          /* frosted elements */
+  --color-muted: var(--bg-muted);              /* subtle backgrounds */
+
+  --color-text: var(--text-primary);           /* main text */
+  --color-text-muted: var(--text-muted);       /* dim text */
+
+  --color-border: var(--border-default);       /* normal borders */
+  --color-border-soft: var(--border-soft);     /* lighter separators */
+
+  --color-accent: var(--accent);               /* blue glow */
+  --color-accent-weak: var(--accent-weak);     /* soft blue glow */
+
+  /* RAW PALETTE (still usable if needed) */
   --color-nebula: #05060d;
   --color-obsidian-indigo: #0b0f1e;
   --color-vanta-twilight: #08051a;
-
   --color-cryo-nebula: #030611;
   --color-absolute-ice: #02040c;
   --color-frozen-void: #01030a;
+}
 
-  --color-seperator: rgba(120, 140, 255, 0.35);
-  --color-subtle: rgba(120, 140, 255, 0.18);
-  --color-text: rgba(255, 255, 255, 0.9);
-  --color-text-dim: rgba(255, 255, 255, 0.62);
+/* -------------------------------------------------
+   DARK THEME (default)
+---------------------------------------------------*/
+:root {
+  color-scheme: dark;
 
-  /* Typography scale (subtle, premium) */
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Helvetica,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  --font-mono:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-    "Courier New", monospace;
+  --bg-primary: #05060d; /* nebula */
+  --bg-secondary: #0b0f1e;
+  --bg-surface: rgba(7, 10, 18, 0.45);
+  --bg-muted: rgba(120, 140, 255, 0.06);
 
-  --text-hero: clamp(2rem, 2.2rem + 2vw, 3.75rem);
-  --text-h2: clamp(1.25rem, 1.1rem + 0.8vw, 1.875rem);
-  --text-body: 1rem;
+  --text-primary: rgba(255, 255, 255, 0.90);
+  --text-muted: rgba(255, 255, 255, 0.62);
 
-  /* 🜂 TRUE VOID GRADIENT — barely visible color, ultra-dark */
-  --gradient-cosmic-void: linear-gradient(
+  --border-default: rgba(148, 163, 184, 0.20);
+  --border-soft: rgba(120, 140, 255, 0.18);
+
+  --accent: rgba(59, 130, 246, 0.85);
+  --accent-weak: rgba(99, 102, 241, 0.18);
+
+  --panel-shadow: 0 0 40px rgba(59, 130, 246, 0.18);
+
+  --bg-hero: linear-gradient(
     135deg,
     #000000 0%,
-    /* pure black */ #000103 12%,
-    /* black w/ 1% blue */ #000307 26%,
-    /* still basically black */ #00040a 40%,
-    /* tiny hint of navy */ #000614 56%,
-    /* deep midnight ink */ #01081c 72%,
-    /* blue barely visible */ #020b24 86%,
-    /* subtle icy indigo */ #000306 100% /* fade back to near-black */
+    #000103 12%,
+    #000307 26%,
+    #00040a 40%,
+    #000614 56%,
+    #01081c 72%,
+    #020b24 86%,
+    #000306 100%
   );
 }
 
-/* ------------------------------
-   Base
----------------------------------*/
-:root {
-  color-scheme: dark;
-  --bg-page: #000000;
-  --ring: 0 0 0 2px rgba(59, 130, 246, 0.35);
+/* -------------------------------------------------
+   LIGHT THEME  (optional: <html data-theme="light">)
+---------------------------------------------------*/
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-primary: #f7fafc;
+  --bg-secondary: #ffffff;
+  --bg-surface: #f4f6fb;
+  --bg-muted: rgba(59, 130, 246, 0.04);
+
+  --text-primary: #0b1220;
+  --text-muted: rgba(11, 18, 32, 0.62);
+
+  --border-default: rgba(15, 23, 42, 0.12);
+  --border-soft: rgba(59, 130, 246, 0.18);
+
+  --accent: #3b82f6;
+  --accent-weak: rgba(59, 130, 246, 0.10);
 }
 
+/* -------------------------------------------------
+   BASE ELEMENTS
+---------------------------------------------------*/
 *,
 *::before,
 *::after {
@@ -64,56 +99,39 @@ body,
 #root {
   height: 100%;
   text-align: center;
+  font-family: var(--font-sans, ui-sans-serif);
 }
 
 body {
   margin: 0;
   min-height: 100%;
-  background: var(--bg-page);
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  text-rendering: optimizeLegibility;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth focus ring for keyboard users */
 :focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.65);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-/* ------------------------------
-   Sections & hero
----------------------------------*/
-.section--cosmic {
-  background-image: var(--gradient-cosmic-void);
+/* -------------------------------------------------
+   HERO + VISUAL UTILITIES
+---------------------------------------------------*/
+.bg-hero {
+  background-image: var(--bg-hero);
   background-size: cover;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
+  background-position: center;
 }
 
-.hero-title {
-  font-size: var(--text-hero);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  font-weight: 800;
-}
-
-.hero-kicker {
-  font-size: var(--text-body);
-  color: var(--color-text-dim);
-}
-
-/* Subtle glow toggle (add class "glow" to any heading) */
+/* text glow helpers */
 .glow {
   text-shadow:
     0 0 0.25rem rgba(99, 102, 241, 0.18),
     0 0 0.6rem rgba(59, 130, 246, 0.12);
 }
 
-/* Extra cyber-glow (stack with .glow + .cyber) */
 .cyber {
   text-shadow:
     0 0 0.35rem rgba(99, 102, 241, 0.35),
@@ -121,55 +139,9 @@ body {
     0 0 2.2rem rgba(124, 58, 237, 0.25);
 }
 
-/* ------------------------------
-   Navbar: frosted glass
----------------------------------*/
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: saturate(140%) blur(10px);
-  -webkit-backdrop-filter: saturate(140%) blur(10px);
-  background: linear-gradient(
-    to bottom,
-    rgba(4, 6, 14, 0.72) 0%,
-    rgba(4, 6, 14, 0.48) 100%
-  );
-  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-}
-
-/* ------------------------------
-   Links: animated underline
----------------------------------*/
-a.ink {
-  position: relative;
-  text-decoration: none;
-  color: white;
-}
-a.ink::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -0.2rem;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    var(--color-subtle),
-    var(--color-seperator)
-  );
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 240ms ease;
-  border-radius: 2px;
-}
-a.ink:hover::after {
-  transform: scaleX(1);
-}
-
-/* ------------------------------
-   Buttons
----------------------------------*/
+/* -------------------------------------------------
+   BUTTONS
+---------------------------------------------------*/
 .btn {
   cursor: pointer;
   display: inline-flex;
@@ -179,12 +151,9 @@ a.ink:hover::after {
   font-weight: 600;
   border-radius: 0.75rem;
   border: 1px solid transparent;
-  transition:
-    transform 120ms ease,
-    border-color 200ms ease,
-    background 200ms ease;
-  will-change: transform;
+  transition: transform 120ms ease, border-color 200ms ease, background 200ms ease;
 }
+
 .btn:active {
   transform: translateY(1px) scale(0.99);
 }
@@ -192,81 +161,72 @@ a.ink:hover::after {
 .btn-primary {
   background: radial-gradient(
     120% 120% at 0% 0%,
-    rgba(99, 102, 241, 0.18) 0%,
-    rgba(59, 130, 246, 0.18) 40%,
-    rgba(59, 130, 246, 0.1) 92%
+    var(--accent-weak) 0%,
+    var(--accent-weak) 40%,
+    rgba(59,130,246,0.10) 92%
   );
-  border-color: rgba(99, 102, 241, 0.22);
+  border-color: color-mix(in oklab, var(--accent) 30%, transparent);
   box-shadow:
-    inset 0 0 0 1px rgba(124, 58, 237, 0.12),
-    0 8px 28px rgba(59, 130, 246, 0.1);
+    inset 0 0 0 1px rgba(124,58,237,0.12),
+    0 8px 28px rgba(59,130,246,0.10);
 }
+
 .btn-primary:hover {
   background: radial-gradient(
     120% 120% at 0% 0%,
-    rgba(99, 102, 241, 0.24) 0%,
-    rgba(59, 130, 246, 0.26) 46%,
-    rgba(59, 130, 246, 0.12) 98%
+    color-mix(in oklab, var(--accent-weak) 140%, transparent) 0%,
+    color-mix(in oklab, var(--accent) 26%, transparent) 46%,
+    rgba(59,130,246,0.12) 98%
   );
-  border-color: rgba(99, 102, 241, 0.35);
+  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
 }
 
 .btn-ghost {
-  border-color: rgba(148, 163, 184, 0.2);
-  background: rgba(7, 10, 18, 0.45);
-}
-.btn-ghost:hover {
-  border-color: rgba(148, 163, 184, 0.35);
-  background: rgba(10, 14, 24, 0.62);
+  border-color: var(--border-default);
+  background: var(--bg-surface);
 }
 
-/* ------------------------------
-   SVG neon glow
----------------------------------*/
-.svg-neon,
+.btn-ghost:hover {
+  border-color: color-mix(in oklab, var(--border-default) 160%, transparent);
+  background: color-mix(in oklab, var(--bg-surface) 120%, black);
+}
+
+/* -------------------------------------------------
+   SVG GLOW
+---------------------------------------------------*/
 .svg-neon img,
 .svg-neon svg {
   filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.25))
-    drop-shadow(0 0 16px rgba(99, 102, 241, 0.25));
+          drop-shadow(0 0 16px rgba(99, 102, 241, 0.25));
 }
 
-/* ------------------------------
-   Animations
----------------------------------*/
+/* -------------------------------------------------
+   ANIMATIONS
+---------------------------------------------------*/
 @keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-    filter: saturate(85%);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: saturate(100%);
-  }
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
 .fade-in {
   animation: fadeUp 560ms cubic-bezier(0.21, 0.72, 0.17, 0.99) both;
 }
 
-/* ------------------------------
-   Utilities (small helpers)
----------------------------------*/
-.text-dim {
-  color: var(--color-text-dim);
-}
-.kbd {
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  padding: 0.15rem 0.4rem;
-  border-radius: 0.4rem;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  background: rgba(15, 23, 42, 0.45);
+/* -------------------------------------------------
+   SMALL HELPERS
+---------------------------------------------------*/
+.text-muted {
+  color: var(--text-muted);
 }
 
-/* Optional: set the whole page to the cosmic gradient */
-.page-cosmic {
-  background-image: var(--gradient-cosmic-void);
-  background-size: cover;
-  background-attachment: fixed;
+.border-default {
+  border-color: var(--border-default);
+}
+
+.border-soft {
+  border-color: var(--border-soft);
+}
+
+.bg-muted {
+  background: var(--bg-muted);
 }

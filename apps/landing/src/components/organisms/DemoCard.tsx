@@ -7,7 +7,8 @@ type DemoCardProps = {
   img: string;
 };
 
-export function DemoCard({ title, desc, id, img }: DemoCardProps) {
+export const DemoCard = ({ title, desc, id, img }: DemoCardProps) => {
+  
   return (
     <div
       className="

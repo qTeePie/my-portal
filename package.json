@@ -6,6 +6,9 @@
     "dev": "pnpm --parallel --filter './apps/*' dev"
   },
   "devDependencies": {
+    "@tanstack/react-query": "^5.90.6",
+    "viem": "~2.38.6",
+    "wagmi": "^2.19.2",
     "@tailwindcss/postcss": "^4.1.16",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",

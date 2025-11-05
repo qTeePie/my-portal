@@ -3,9 +3,9 @@ import { DemoCard } from "./components/organisms/DemoCard";
 
 const demos = [
   {
-    id: "royalty-nft",
+    id: "miniNFT",
     img: "nft",
-    title: "YUL Mini721",
+    title: "YUL MiniNFT",
     desc: "Minimal NFT in pure yul.",
   },
   {
@@ -21,6 +21,7 @@ const demos = [
     desc: "Lightweight DAO governance example.",
   },
 ] as const;
+
 
 export default function App() {
   return (
@@ -53,9 +54,9 @@ export default function App() {
         <section className="flex justify-center section--cosmic fade-in">
           <div
             className=" 
-              flex flex-col lg:flex-row grow min-h-[640px] 
-              items-center justify-center px-4 py-4
-              max-w-4xl
+              flex flex-col lg:flex-row grow min-h-[500px]
+              items-center justify-center
+              max-w-4xl mt-8 lg:mt-0
             "
           >
             <div className="lg:w-1/2">

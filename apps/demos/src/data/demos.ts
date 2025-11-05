@@ -1,8 +1,8 @@
 export const demos = [
   {
-    id: "royalty-nft",
+    id: "miniNFT",
     img: "nft",
-    title: "YUL Mini721",
+    title: "YUL MiniNFT",
     desc: "Minimal NFT in pure yul.",
   },
   {
