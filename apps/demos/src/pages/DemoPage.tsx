@@ -1,8 +1,16 @@
+//import { useEffect } from "react";
+
 import { useParams } from "react-router-dom";
+import { useAccount } from 'wagmi'
+
+// local
+import { useSVGRead } from "../web3/hooks/mini721/read";
 import { demos } from "../data/demos";
 import { DemoLayout } from "../components/layouts/DemoLayout";
 
 export const DemoPage = () => {
+  const { address, isConnected } = useAccount();
+
   const { demoId } = useParams();
   const demo = demos.find((d) => d.id === demoId);
 
@@ -11,6 +19,13 @@ export const DemoPage = () => {
       <div className="text-center text-red-400 mt-20">Demo not found.</div>
     );
   }
+
+  if (!isConnected) {
+   return <p className="text-center mt-10">Please connect a wallet first.</p>
+  }
+
+  const svg = useSVGRead();
+  console.log(svg);
 
   return (
     <DemoLayout
@@ -21,6 +36,7 @@ export const DemoPage = () => {
       contractUrl="https://etherscan.io/address/0x123"
     >
       <div className="flex flex-col items-center gap-8">
+        
         {/* Actinon Buttons */}
         <div className="flex justify-center gap-4">
           <button className="btn btn-primary">Mint NFT</button>
@@ -41,6 +57,13 @@ export const DemoPage = () => {
             className="demo-card__icon w-50 h-50 object-contain mb-4 mt-2"
           />
         </div>
+         {/* Safe since its only for the SVG fetched from our own (!!) smart contract*/}
+        {svg && (
+        <div
+          className="w-[400px] h-[400px] border border-red-500"
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
+      )}
         {/* Action Log / Status Box */}
         <div className="h-40 w-80 border border-subtle rounded-lg"></div>
 

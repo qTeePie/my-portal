@@ -1,16 +1,17 @@
 import { Link } from "react-router-dom";
 import { demos } from "../data/demos";
 
-import { Account } from '../web3/account'
-import { WalletOptions } from '../web3/wallet-options'
+import { Account } from '../web3/wallet/account'
+import { WalletOptions } from '../web3/wallet/wallet-options'
 import { useAccount } from 'wagmi'
 
 function ConnectWallet() {
-  const { isConnected } = useAccount()
+  const { isConnected } = useAccount();
   if (isConnected) return <Account />
   return <WalletOptions />
 }
 
+  
 export const HomePage = () => {
   return (
     <div className="flex flex-col">
