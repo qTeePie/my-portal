@@ -1,4 +1,4 @@
-import type { ReactNode }  from "react";
+import type { ReactNode } from "react";
 import { useEffect } from "react";
 
 type ModalProps = {
@@ -28,8 +28,8 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
     >
       <div
         className="
-          bg-nebula/80 border border-default rounded-xl
-          max-w-sm w-[90%] p-6
+          bg-nebula/100 border border-default rounded-xl
+          max-w-sm w-[90%] p-8
           shadow-[0_0_40px_rgba(59,130,246,0.18)]
         "
         onClick={(e) => e.stopPropagation()} // prevent close when clicking modal

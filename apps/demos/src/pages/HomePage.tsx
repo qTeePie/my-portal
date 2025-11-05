@@ -17,9 +17,7 @@ export const HomePage = () => {
       <ConnectWallet />
       {/* NAVBAR */}
       <nav className="navbar flex items-center justify-between h-16 px-4 border-b border-neutral-800">
-        <span className="font-bold text-lg hero-kicker">
-          A2Z Blocks — Demos
-        </span>
+        <span className="font-bold text-lg">A2Z Blocks — Demos</span>
         <div className="flex gap-6 text-sm">
           <Link to="/" className="ink">
             Landing
@@ -37,7 +35,7 @@ export const HomePage = () => {
             <Link
               key={demo.id}
               to={`/${demo.id}`}
-              className="border border-subtle rounded-xl p-6"
+              className="border border-subtle rounded-xl p-6 bg-secondary"
             >
               <h2 className="text-lg font-semibold">{demo.title}</h2>
               <p className="text-dim text-sm mt-1">{demo.desc}</p>

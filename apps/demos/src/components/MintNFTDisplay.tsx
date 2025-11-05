@@ -1,32 +1,63 @@
 import { useState } from "react";
 
 const nftOptions = [
-    { label: "ICE", src: "/icons/tmp/ICE.svg" },
-    { label: "EMERALD", src: "/icons/tmp/EMERALD.svg" },
-    { label: "COPPER", src: "/icons/tmp/COPPER.svg" },
+  { label: "ICE", src: "/icons/tmp/ICE.svg" },
+  { label: "EMERALD", src: "/icons/tmp/EMERALD.svg" },
+  { label: "COPPER", src: "/icons/tmp/COPPER.svg" },
 ];
 
 export const MintNFTDisplay = () => {
   const [index, setIndex] = useState(0);
 
   const next = () => setIndex((i) => (i + 1) % nftOptions.length);
-  const prev = () => setIndex((i) => (i - 1 + nftOptions.length) % nftOptions.length);
+  const prev = () =>
+    setIndex((i) => (i - 1 + nftOptions.length) % nftOptions.length);
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      {/* NFT Image */}
-      <div className="w-50 h-50 flex items-center justify-center">
-        <img src={nftOptions[index].src} alt={nftOptions[index].label} className="w-full h-full object-contain" />
+    <div className="flex flex-col items-center gap-3">
+      {/* Image Panel */}
+      <div
+        className="
+          w-48 h-48 flex items-center justify-center
+          bg-secondary border border-default rounded-lg
+          overflow-hidden
+        "
+      >
+        <img
+          key={nftOptions[index].src}
+          src={nftOptions[index].src}
+          alt={nftOptions[index].label}
+          className="w-full h-full object-contain fade-in"
+        />
       </div>
 
       {/* Controls */}
-      <div className="flex items-center gap-4">
-        <button onClick={prev}>←</button>
-       {/* FIX: reserve space so arrows never shift */}
-        <span className="text-center w-24">
+      <div className="flex items-center gap-4 text-muted select-none">
+        <span
+          onClick={prev}
+          className="
+            cursor-pointer text-lg 
+            transition-colors duration-150
+            hover:text-accent
+          "
+        >
+          ‹
+        </span>
+
+        <span className="text-xs tracking-widest uppercase font-mono w-24 text-center">
           {nftOptions[index].label}
         </span>
-        <button onClick={next}>→</button>
+
+        <span
+          onClick={next}
+          className="
+            cursor-pointer text-lg 
+            transition-colors duration-150
+            hover:text-accent
+          "
+        >
+          ›
+        </span>
       </div>
 
       {/* Dots */}
@@ -35,13 +66,16 @@ export const MintNFTDisplay = () => {
           <div
             key={i}
             onClick={() => setIndex(i)}
-            className="w-3 h-3 rounded-full cursor-pointer"
-            style={{
-              background: i === index ? "white" : "gray",
-            }}
+            className={`
+        w-2.5 h-2.5 rounded-full cursor-pointer transition-all
+        ${i === index ? "bg-accent" : "bg-muted border border-soft"}
+      `}
           />
         ))}
       </div>
+
+      {/* Mint Button */}
+      <button className="btn btn-primary mt-3">Mint NFT</button>
     </div>
   );
 };
