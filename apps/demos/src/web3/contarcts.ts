@@ -15,5 +15,12 @@ export const mini721ContractConfig = {
       inputs: [],
       outputs: [{ name: "supply", type: "uint256" }],
     },
+    {
+      type: "function",
+      name: "mint",
+      stateMutability: "nonpayable",
+      inputs: [{ name: "to", type: "address" }],
+      outputs: [],
+    },
   ],
 } as const;

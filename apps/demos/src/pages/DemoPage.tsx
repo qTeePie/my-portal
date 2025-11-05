@@ -1,15 +1,20 @@
 //import { useEffect } from "react";
 
 import { useParams } from "react-router-dom";
-import { useAccount } from 'wagmi'
+import { useAccount } from "wagmi";
 
 // local
-import { useSVGRead } from "../web3/hooks/mini721/read";
+import { useSvg, useTotalSupply } from "../web3/hooks/mini721/read";
+import { useMint } from "../web3/hooks/mini721/write";
+
 import { demos } from "../data/demos";
 import { DemoLayout } from "../components/layouts/DemoLayout";
 
 export const DemoPage = () => {
   const { address, isConnected } = useAccount();
+
+  const { mint, status } = useMint();
+  const { readTotalSupply, totalSupply } = useTotalSupply();
 
   const { demoId } = useParams();
   const demo = demos.find((d) => d.id === demoId);
@@ -21,11 +26,10 @@ export const DemoPage = () => {
   }
 
   if (!isConnected) {
-   return <p className="text-center mt-10">Please connect a wallet first.</p>
+    return <p className="text-center mt-10">Please connect a wallet first.</p>;
   }
 
-  const svg = useSVGRead();
-  console.log(svg);
+  const svg = useSvg();
 
   return (
     <DemoLayout
@@ -36,11 +40,18 @@ export const DemoPage = () => {
       contractUrl="https://etherscan.io/address/0x123"
     >
       <div className="flex flex-col items-center gap-8">
-        
         {/* Actinon Buttons */}
         <div className="flex justify-center gap-4">
-          <button className="btn btn-primary">Mint NFT</button>
-          <button className="btn btn-primary">Show Total Supply</button>
+          <button
+            disabled={status === "pending"}
+            onClick={() => mint(address)}
+            className="btn btn-primary"
+          >
+            Mint NFT
+          </button>
+          <button onClick={() => readTotalSupply()} className="btn btn-primary">
+            Show Total Supply
+          </button>
           <button className="btn btn-primary">Owner Of #ID</button>
         </div>
         {/* NFT Preview*/}
@@ -51,19 +62,8 @@ export const DemoPage = () => {
           border border-subtle rounded-lg
         "
         >
-          <img
-            src={`icons/nft.svg`}
-            alt="nft"
-            className="demo-card__icon w-50 h-50 object-contain mb-4 mt-2"
-          />
+          {!svg ? <p>Loading SVG...</p> : <img src={svg} alt="NFT preview" />}
         </div>
-         {/* Safe since its only for the SVG fetched from our own (!!) smart contract*/}
-        {svg && (
-        <div
-          className="w-[400px] h-[400px] border border-red-500"
-          dangerouslySetInnerHTML={{ __html: svg }}
-        />
-      )}
         {/* Action Log / Status Box */}
         <div className="h-40 w-80 border border-subtle rounded-lg"></div>
 
