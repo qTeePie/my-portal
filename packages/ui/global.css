@@ -2,25 +2,24 @@
 
 /* -------------------------------------------------
    TAILWIND THEME — semantic design tokens
-   (all of these are real Tailwind classes)
 ---------------------------------------------------*/
 @theme {
   /* SEMANTIC COLORS (UI tokens) */
-  --color-primary: var(--bg-primary);          /* page background */
-  --color-secondary: var(--bg-secondary);      /* panels/cards */
-  --color-surface: var(--bg-surface);          /* frosted elements */
-  --color-muted: var(--bg-muted);              /* subtle backgrounds */
+  --color-primary: var(--bg-primary);
+  --color-secondary: var(--bg-secondary);
+  --color-surface: var(--bg-surface);
+  --color-muted: var(--bg-muted);
 
-  --color-text: var(--text-primary);           /* main text */
-  --color-text-muted: var(--text-muted);       /* dim text */
+  --color-text: var(--text-primary);
+  --color-text-muted: var(--text-muted);
 
-  --color-border: var(--border-default);       /* normal borders */
-  --color-border-soft: var(--border-soft);     /* lighter separators */
+  --color-border: var(--border-default);
+  --color-border-soft: var(--border-soft);
 
-  --color-accent: var(--accent);               /* blue glow */
-  --color-accent-weak: var(--accent-weak);     /* soft blue glow */
+  --color-accent: var(--accent);
+  --color-accent-weak: var(--accent-weak);
 
-  /* RAW PALETTE (still usable if needed) */
+  /* RAW PALETTE */
   --color-nebula: #05060d;
   --color-obsidian-indigo: #0b0f1e;
   --color-vanta-twilight: #08051a;
@@ -35,7 +34,7 @@
 :root {
   color-scheme: dark;
 
-  --bg-primary: #05060d; /* nebula */
+  --bg-primary: #05060d;
   --bg-secondary: #0b0f1e;
   --bg-surface: rgba(7, 10, 18, 0.45);
   --bg-muted: rgba(120, 140, 255, 0.06);
@@ -65,7 +64,7 @@
 }
 
 /* -------------------------------------------------
-   LIGHT THEME  (optional: <html data-theme="light">)
+   LIGHT THEME (optional)
 ---------------------------------------------------*/
 :root[data-theme="light"] {
   color-scheme: light;
@@ -125,7 +124,6 @@ body {
   background-position: center;
 }
 
-/* text glow helpers */
 .glow {
   text-shadow:
     0 0 0.25rem rgba(99, 102, 241, 0.18),
@@ -140,55 +138,86 @@ body {
 }
 
 /* -------------------------------------------------
-   BUTTONS
+   ✅ BUTTONS (now inside @layer components)
 ---------------------------------------------------*/
-.btn {
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.05rem;
-  font-weight: 600;
-  border-radius: 0.75rem;
-  border: 1px solid transparent;
-  transition: transform 120ms ease, border-color 200ms ease, background 200ms ease;
-}
+@layer components {
 
-.btn:active {
-  transform: translateY(1px) scale(0.99);
-}
+  .btn {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.05rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    transition: transform 120ms ease, border-color 200ms ease, background 200ms ease;
+  }
 
-.btn-primary {
-  background: radial-gradient(
-    120% 120% at 0% 0%,
-    var(--accent-weak) 0%,
-    var(--accent-weak) 40%,
-    rgba(59,130,246,0.10) 92%
-  );
-  border-color: color-mix(in oklab, var(--accent) 30%, transparent);
-  box-shadow:
-    inset 0 0 0 1px rgba(124,58,237,0.12),
-    0 8px 28px rgba(59,130,246,0.10);
-}
+  .btn:active {
+    transform: translateY(1px) scale(0.99);
+  }
 
-.btn-primary:hover {
-  background: radial-gradient(
-    120% 120% at 0% 0%,
-    color-mix(in oklab, var(--accent-weak) 140%, transparent) 0%,
-    color-mix(in oklab, var(--accent) 26%, transparent) 46%,
-    rgba(59,130,246,0.12) 98%
-  );
-  border-color: color-mix(in oklab, var(--accent) 50%, transparent);
-}
+  .btn-primary {
+    background: radial-gradient(
+      120% 120% at 0% 0%,
+      var(--accent-weak) 0%,
+      var(--accent-weak) 40%,
+      rgba(59,130,246,0.10) 92%
+    );
+    border-color: color-mix(in oklab, var(--accent) 30%, transparent);
+    box-shadow:
+      inset 0 0 0 1px rgba(124,58,237,0.12),
+      0 8px 28px rgba(59,130,246,0.10);
+  }
 
-.btn-ghost {
-  border-color: var(--border-default);
-  background: var(--bg-surface);
-}
+  .btn-primary:hover {
+    background: radial-gradient(
+      120% 120% at 0% 0%,
+      color-mix(in oklab, var(--accent) 32%, black),
+      color-mix(in oklab, var(--accent) 26%, transparent) 46%,
+      rgba(59,130,246,0.12) 98%
+    );
+    border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+  }
 
-.btn-ghost:hover {
-  border-color: color-mix(in oklab, var(--border-default) 160%, transparent);
-  background: color-mix(in oklab, var(--bg-surface) 120%, black);
+  .btn-secondary {
+    background: rgba(59,130,246,0.06);
+    border: 1px solid color-mix(in oklab, var(--accent) 28%, transparent);
+    color: var(--text-primary);
+    box-shadow: inset 0 0 0 0 rgba(59,130,246,0.12);
+    transition: background 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(59,130,246,0.12);
+    border-color: color-mix(in oklab, var(--accent) 50%, transparent);
+    box-shadow: inset 0 0 0 1px rgba(59,130,246,0.18);
+  }
+
+  .btn-secondary:active {
+    transform: translateY(1px) scale(0.985);
+    background: rgba(59,130,246,0.18);
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: rgba(59,130,246,0.04);
+    border-color: var(--border-default);
+    box-shadow: none;
+  }
+
+  .btn-ghost {
+    border-color: var(--border-default);
+    background: var(--bg-surface);
+  }
+
+  .btn-ghost:hover {
+    border-color: color-mix(in oklab, var(--border-default) 160%, transparent);
+    background: color-mix(in oklab, var(--bg-surface) 120%, black);
+  }
+
 }
 
 /* -------------------------------------------------
@@ -209,24 +238,18 @@ body {
 }
 
 .fade-in {
-  animation: fadeUp 560ms cubic-bezier(0.21, 0.72, 0.17, 0.99) both;
+  animation: fadeIn 0.28s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* -------------------------------------------------
    SMALL HELPERS
 ---------------------------------------------------*/
-.text-muted {
-  color: var(--text-muted);
-}
-
-.border-default {
-  border-color: var(--border-default);
-}
-
-.border-soft {
-  border-color: var(--border-soft);
-}
-
-.bg-muted {
-  background: var(--bg-muted);
-}
+.text-muted { color: var(--text-muted); }
+.border-default { border-color: var(--border-default); }
+.border-soft { border-color: var(--border-soft); }
+.bg-muted { background: var(--bg-muted); }

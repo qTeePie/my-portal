@@ -10,11 +10,18 @@ import { useMint } from "../web3/hooks/mini721/write";
 import { demos } from "../data/demos";
 import { DemoLayout } from "../components/layouts/DemoLayout";
 
-import { MintNFTDisplay } from "../components/NFTCarosel";
-
+import { NFTCarosel } from "../components/NFTCarosel";
 import { Modal } from "../components/Modal";
 import { ActionLog } from "../components/ActionLog";
+
 import type { LogEntry } from "../components/ActionLog";
+import type { UI_NFT } from "../data/UI_NFT";
+
+export const previewNFTs: UI_NFT[] = [
+  { label: "ICE", svg: "/icons/tmp/ICE.svg" },
+  { label: "EMERALD", svg: "/icons/tmp/EMERALD.svg" },
+  { label: "COPPER", svg: "/icons/tmp/COPPER.svg" },
+];
 
 // ❗ TODO: for write events [Gas Usage] in log entry
 export const DemoPage = () => {
@@ -35,6 +42,7 @@ export const DemoPage = () => {
 
   const { mint, status } = useMint(address);
   const { readTotalSupply, totalSupply } = useTotalSupply();
+  const [index, setIndex] = useState(0);
 
   const [showMintModal, setShowMintModal] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -56,7 +64,7 @@ export const DemoPage = () => {
       >
         <div className="flex flex-col items-center gap-6">
           {/* Actinon Buttons */}
-          <div className="flex flex-row items-center gap-3 bg-soft/20 rounded-xl border border-soft">
+          <div className="flex flex-row items-center gap-3 ">
             {/* ✅ PRIMARY MINT BUTTON */}
             <button
               disabled={status === "pending"}
@@ -130,9 +138,7 @@ export const DemoPage = () => {
           </div>
 
           {/* Action Log / Status Box */}
-          <div className="h-40 w-80 border border-soft rounded-lg text-start">
-            <ActionLog logs={logs} />
-          </div>
+          <ActionLog logs={logs} />
 
           {/* Seperator */}
           <div className="h-[1px] w-1/2 bg-secondary" />
@@ -169,7 +175,10 @@ export const DemoPage = () => {
       </DemoLayout>
 
       <Modal isOpen={showMintModal} onClose={() => setShowMintModal(false)}>
-        <MintNFTDisplay />
+        <div className="flex flex-col items-center gap-4">
+          <NFTCarosel items={previewNFTs} index={index} onChange={setIndex}/>
+          <button className="btn btn-primary mt-3" onClick={() => mint(address)}>Mint Selected</button>
+        </div>
       </Modal>
     </>
   );

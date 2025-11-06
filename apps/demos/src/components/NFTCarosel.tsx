@@ -1,17 +1,16 @@
-import { useState } from "react";
+import type {UI_NFT} from "../data/UI_NFT"
 
-const nftOptions = [
-  { label: "ICE", src: "/icons/tmp/ICE.svg" },
-  { label: "EMERALD", src: "/icons/tmp/EMERALD.svg" },
-  { label: "COPPER", src: "/icons/tmp/COPPER.svg" },
-];
+type NFTCarouselProps = {
+  items: UI_NFT[];
+  index: number;
+  onChange: (i: number) => void;
+};
 
-export const MintNFTDisplay = () => {
-  const [index, setIndex] = useState(0);
+export const NFTCarosel = ({items, index, onChange}: NFTCarouselProps) => {
+  const next = () => onChange((index + 1) % items.length);
+  const prev = () => onChange((index - 1 + items.length) % items.length);
 
-  const next = () => setIndex((i) => (i + 1) % nftOptions.length);
-  const prev = () =>
-    setIndex((i) => (i - 1 + nftOptions.length) % nftOptions.length);
+  const nft = items[index];
 
   return (
     <div className="flex flex-col items-center gap-3">
@@ -23,10 +22,10 @@ export const MintNFTDisplay = () => {
           overflow-hidden
         "
       >
-        <img
-          key={nftOptions[index].src}
-          src={nftOptions[index].src}
-          alt={nftOptions[index].label}
+         <img
+          key={nft.svg}
+          src={nft.svg}
+          alt={nft.label}
           className="w-full h-full object-contain fade-in"
         />
       </div>
@@ -45,7 +44,7 @@ export const MintNFTDisplay = () => {
         </span>
 
         <span className="text-xs tracking-widest uppercase font-mono w-24 text-center">
-          {nftOptions[index].label}
+          {items[index].label}
         </span>
 
         <span
@@ -62,10 +61,10 @@ export const MintNFTDisplay = () => {
 
       {/* Dots */}
       <div className="flex gap-2">
-        {nftOptions.map((_, i) => (
+        {items.map((_, i) => (
           <div
             key={i}
-            onClick={() => setIndex(i)}
+            onClick={() => onChange(i)}
             className={`
         w-2.5 h-2.5 rounded-full cursor-pointer transition-all
         ${i === index ? "bg-accent" : "bg-muted border border-soft"}
