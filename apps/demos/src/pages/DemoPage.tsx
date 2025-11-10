@@ -77,7 +77,7 @@ export const DemoPage = () => {
       button: "Read Balance",
       action: async (input: string) => {
         const balance = await readBalanceOf(input as `0x${string}`);
-        return `👤 Balance = ${balance}`;
+        return `🔢 Balance = ${balance}`;
       },
     },
   } as const;
@@ -140,16 +140,13 @@ export const DemoPage = () => {
 
             {/* BALANCE OF */}
             <button
-              onClick={async () => {
-                const balance = await readBalanceOf(address);
-                pushLog({
-                  type: "info",
-                  message: `👤 Balance of 0xXXX = ${balance}`,
-                });
+              onClick={() => {
+                setShowReadModal(true);
+                setActiveRead("balanceOf");
               }}
               className="btn btn-secondary flex items-center gap-2"
             >
-              👤 Balance
+              🔢 Balances
             </button>
           </div>
 
@@ -254,11 +251,15 @@ export const DemoPage = () => {
             </div>
             <button
               onClick={async () => {
-                const owner = await readOwnerOf(3n);
-                pushLog({
-                  type: "info",
-                  message: `🔍 Owner of = ${owner}`,
-                });
+                try {
+                  const msg = await mode.action(readArgument);
+                  pushLog({ type: "info", message: msg });
+                } catch (err) {
+                  pushLog({
+                    type: "error",
+                    message: `❌ ${(err as Error).message || "Action failed"}`,
+                  });
+                }
               }}
               className="btn btn-secondary"
             >

@@ -24,7 +24,7 @@ export const DemoLayout = ({
   return (
     <div
       className="
-          min-h-screen flex flex-col items-center px-6 py-10 fade-in bg-primary"
+          min-h-screen flex flex-col items-center px-6 py-10 fade-in"
     >
       {/* TOPBAR */}
       <header className="w-full max-w-4xl flex justify-between items-center mb-4 text-sm text-dim">

@@ -52,8 +52,8 @@ export const readOwnerOf = async (tokenId: bigint) => {
       ...mini721ContractConfig,
       functionName: "ownerOf",
       args: [tokenId],
-      authorizationList: [], // temp fix for viem 7702 typing bug
-    });
+    } as any); // typescript complains about auth list
+
     return owner as `0x${string}`;
   } catch (err) {
     console.error("❌ Failed to read ownerOf:", err);
