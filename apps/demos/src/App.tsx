@@ -7,13 +7,13 @@ import { WagmiProvider } from "wagmi";
 import { HomePage } from "./pages/HomePage";
 import { DemoPage } from "./pages/DemoPage";
 
-import { config } from "./web3/config";
+import { wagmiConfig } from "./web3/config";
 
 const queryClient = new QueryClient();
 
 export const App = () => {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <Routes>
           <Route path="/" element={<HomePage />} />

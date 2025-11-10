@@ -1,4 +1,4 @@
-import type {UI_NFT} from "../data/UI_NFT"
+import type { UI_NFT } from "../data/UI_NFT";
 
 type NFTCarouselProps = {
   items: UI_NFT[];
@@ -6,7 +6,7 @@ type NFTCarouselProps = {
   onChange: (i: number) => void;
 };
 
-export const NFTCarosel = ({items, index, onChange}: NFTCarouselProps) => {
+export const NFTCarosel = ({ items, index, onChange }: NFTCarouselProps) => {
   const next = () => onChange((index + 1) % items.length);
   const prev = () => onChange((index - 1 + items.length) % items.length);
 
@@ -18,11 +18,10 @@ export const NFTCarosel = ({items, index, onChange}: NFTCarouselProps) => {
       <div
         className="
           w-48 h-48 flex items-center justify-center
-          bg-secondary border border-default rounded-lg
           overflow-hidden
         "
       >
-         <img
+        <img
           key={nft.svg}
           src={nft.svg}
           alt={nft.label}

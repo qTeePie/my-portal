@@ -1,7 +1,7 @@
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { mini721ContractConfig } from "../../contarcts";
+import { mini721ContractConfig } from "../contracts";
 
-export const useMint = (address: string) => {
+export const useMint = (sender: string) => {
   const { data: txHash, writeContract, status } = useWriteContract();
 
   const {
@@ -15,7 +15,7 @@ export const useMint = (address: string) => {
       ...mini721ContractConfig,
       functionName: "mint",
       args: [to],
-      account: address,
+      account: sender,
     });
 
   return {

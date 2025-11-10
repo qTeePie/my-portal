@@ -4,8 +4,13 @@ import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 // local
-import { useSvg, useTotalSupply } from "../web3/hooks/mini721/read";
-import { useMint } from "../web3/hooks/mini721/write";
+import {
+  useSvg,
+  useTotalSupply,
+  useBalanceOf,
+  readOwnerOf,
+} from "../web3/miniNFT/read";
+import { useMint } from "../web3/miniNFT/write";
 
 import { demos } from "../data/demos";
 import { DemoLayout } from "../components/layouts/DemoLayout";
@@ -40,11 +45,45 @@ export const DemoPage = () => {
     return <p className="text-center mt-10">Please connect a wallet first.</p>;
   }
 
-  const { mint, status } = useMint(address);
-  const { readTotalSupply, totalSupply } = useTotalSupply();
   const [index, setIndex] = useState(0);
 
+  // WRITE TO CONTARCT STUFF
+  const { mint, status } = useMint(address);
   const [showMintModal, setShowMintModal] = useState(false);
+
+  // READ FROM CONTARCT STUFF
+  const { readTotalSupply } = useTotalSupply();
+  const { readBalanceOf } = useBalanceOf();
+
+  const [showReadModal, setShowReadModal] = useState(false);
+  const [activeRead, setActiveRead] = useState<"ownerOf" | "balanceOf" | null>(
+    null,
+  );
+  const [readArgument, setReadArgument] = useState("");
+
+  const readModes = {
+    ownerOf: {
+      label: "Owner of which token?",
+      placeholder: "tokenId",
+      button: "Read Owner",
+      action: async (input: string) => {
+        const owner = await readOwnerOf(BigInt(input));
+        return `🔍 Owner of = ${owner}`;
+      },
+    },
+    balanceOf: {
+      label: "Balance of which address?",
+      placeholder: "address",
+      button: "Read Balance",
+      action: async (input: string) => {
+        const balance = await readBalanceOf(input as `0x${string}`);
+        return `👤 Balance = ${balance}`;
+      },
+    },
+  } as const;
+  const mode = activeRead ? readModes[activeRead] : null;
+
+  // OUTPUTS
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
   const pushLog = (entry: LogEntry) => {
@@ -74,13 +113,13 @@ export const DemoPage = () => {
               🎨 Mint New
             </button>
 
-            {/* ✅ SECONDARY: TOTAL SUPPLY */}
+            {/* TOTAL SUPPLY */}
             <button
               onClick={async () => {
                 const supply = await readTotalSupply();
                 pushLog({
                   type: "info",
-                  message: `ℹ️ Total Supply = ${supply}`,
+                  message: `📊 Total Supply = ${supply.data}`,
                 });
               }}
               className="btn btn-secondary flex items-center gap-2"
@@ -88,25 +127,24 @@ export const DemoPage = () => {
               📊 Supply
             </button>
 
-            {/* ✅ SECONDARY: OWNER OF */}
+            {/* OWNER OF */}
             <button
               onClick={() => {
-                pushLog({
-                  type: "info",
-                  message: "🔍 Owner lookup not implemented yet",
-                });
+                setShowReadModal(true);
+                setActiveRead("ownerOf");
               }}
               className="btn btn-secondary flex items-center gap-2"
             >
               🔍 Owner
             </button>
 
-            {/* ✅ SECONDARY: BALANCE OF */}
+            {/* BALANCE OF */}
             <button
-              onClick={() => {
+              onClick={async () => {
+                const balance = await readBalanceOf(address);
                 pushLog({
                   type: "info",
-                  message: "👤 Balance lookup not implemented yet",
+                  message: `👤 Balance of 0xXXX = ${balance}`,
                 });
               }}
               className="btn btn-secondary flex items-center gap-2"
@@ -121,17 +159,20 @@ export const DemoPage = () => {
               w-80 h-64
               grid place-items-center
               border border-soft rounded-lg
-              text-start
+              bg-black/30
             "
           >
             {!svg ? (
               <p>Loading SVG...</p>
             ) : (
-              <div className="flex flex-col justify-center items-center  ">
+              <div className="flex flex-col justify-center items-center">
                 <img width={160} src={svg} alt="NFT preview" />
                 <div className="flex flex-col gap-1 text-md">
                   <span>Token #3 • Owner: 0x1234…abcd</span>
-                  <span>[ Transfer ] [ Change NFT Color ]</span>
+                  <div className="flex justify-around">
+                    <span className="text-pink">[ Transfer ]</span>
+                    <span className="text-mango">[ Change NFT Color ]</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -140,46 +181,92 @@ export const DemoPage = () => {
           {/* Action Log / Status Box */}
           <ActionLog logs={logs} />
 
-          {/* Seperator */}
-          <div className="h-[1px] w-1/2 bg-secondary" />
+          {/* About & Specs */}
+          <div className="flex flex-col gap-4 w-1/2 text-start">
+            {/* Seperator */}
+            <div className="h-[1px] bg-secondary" />
 
-          {/* About Section */}
-          <div className="text-start">
-            <h3 className="font-semibold">About Mini721</h3>
-            <ul>
-              <li>100& Yul — no Solidity, no OZ </li>
-              <li>Gas-lean storage layout (single mapping)</li>
-              <li>Minimal ERC-721: mint + transfer + events</li>
+            {/* About */}
+            <h3 className="font-semibold">About MiniNFT</h3>
+            <ul className="list-cyber font-mono text-sm space-y-1 text-muted">
+              <li>Mint + transfer + events</li>
+              <li>Teaches selector handling, sstore, logs</li>
               <li>
-                Teaches selector handling, sstore, logs on an OpCode level
+                Plays with different mapping styles:
+                <ul className="not-list-cyber list-sub py-1 text-sm text-muted">
+                  <li>Simple linear mapping</li>
+                  <li>Realistic keccak(key, slot)</li>
+                </ul>
+              </li>
+            </ul>
+
+            {/* Seperator */}
+            <div className="h-[1px] bg-secondary" />
+
+            {/* Technical Specifications */}
+            <h3 className="font-semibold">Spec Sheet</h3>
+            <ul className="list-cyber font-mono text-sm space-y-1 text-muted">
+              <li>Bytecode Size: ~400 bytes</li>
+              <li>
+                Storage
+                <ul className="not-list-cyber list-sub py-1 text-sm text-muted">
+                  <li>2 x mappings</li>
+                  <li>1 x uint256 packed with Supply + Flags</li>
+                </ul>
               </li>
             </ul>
           </div>
-
-          {/* Seperator */}
-          <div className="h-[1px] w-1/2 bg-secondary" />
-
-          {/* Technical Specifications */}
-          <div className="text-start">
-            <h3 className="font-semibold">About Mini721</h3>
-            <ul>
-              <li>100& Yul — no Solidity, no OZ </li>
-              <li>Gas-lean storage layout (single mapping)</li>
-              <li>Minimal ERC-721: mint + transfer + events</li>
-              <li>
-                Teaches selector handling, sstore, logs on an OpCode level
-              </li>
-            </ul>
+          <div className="border-t border-b border-soft text-accent my-4 px-2 py-4">
+            <p>
+              ⚠ <strong>NB:</strong> Though MiniNFT is an NFT, it does not
+              comply with the ERC721 standard.
+            </p>
+            <p>Minis will not display in any wallet. 👻</p>
           </div>
         </div>
       </DemoLayout>
 
       <Modal isOpen={showMintModal} onClose={() => setShowMintModal(false)}>
         <div className="flex flex-col items-center gap-4">
-          <NFTCarosel items={previewNFTs} index={index} onChange={setIndex}/>
-          <button className="btn btn-primary mt-3" onClick={() => mint(address)}>Mint Selected</button>
+          <NFTCarosel items={previewNFTs} index={index} onChange={setIndex} />
+          <button
+            className="btn btn-primary mt-3"
+            onClick={() => mint(address)}
+          >
+            Mint Selected
+          </button>
         </div>
       </Modal>
+      {mode && (
+        <Modal isOpen={showReadModal} onClose={() => setShowReadModal(false)}>
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col gap-4 self-stretch mx-4 my-2">
+              <span>{mode.label}</span>
+              <input
+                placeholder={mode.placeholder}
+                onChange={(e) => setReadArgument(e.target.value)}
+                className="
+                  input input-primary 
+                  border border-soft rounded-lg p-1
+                  bg-black/30
+                "
+              />
+            </div>
+            <button
+              onClick={async () => {
+                const owner = await readOwnerOf(3n);
+                pushLog({
+                  type: "info",
+                  message: `🔍 Owner of = ${owner}`,
+                });
+              }}
+              className="btn btn-secondary"
+            >
+              {mode.button}
+            </button>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

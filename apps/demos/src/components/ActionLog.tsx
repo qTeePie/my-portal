@@ -19,7 +19,14 @@ export const ActionLog = ({ logs }: ActionLogProps) => {
   }, [logs]);
     */
   return (
-    <div className="h-40 w-80 text-start border border-soft rounded-lg overflow-y-auto text-sm p-2">
+    <div
+      className="
+        h-40 w-80 bg-black/30
+        text-sm text-start 
+        border border-soft rounded-lg 
+        overflow-y-auto overflow-x-hidden p-2
+        "
+    >
       {logs.length === 0 && (
         <p className="text-subtle text-center mt-2">No actions yet...</p>
       )}

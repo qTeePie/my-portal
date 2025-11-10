@@ -4,7 +4,7 @@ import { anvil } from "wagmi/chains";
 
 // const projectId = "";
 
-export const config = createConfig({
+export const wagmiConfig = createConfig({
   chains: [{ ...anvil, testnet: true }],
   transports: {
     [anvil.id]: http(), // uses RPC from chain definition → 127.0.0.1:8545
