@@ -12,12 +12,6 @@ type ActionLogProps = {
 export const ActionLog = ({ logs }: ActionLogProps) => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // auto-scroll to bottom when a new log appears
-  /* // cool idea for another time  
-    useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
-    */
   return (
     <div
       className="
@@ -34,13 +28,13 @@ export const ActionLog = ({ logs }: ActionLogProps) => {
       {logs.map((log, i) => (
         <p
           key={i}
-          className={
+          className={`log-line ${
             log.type === "success"
               ? "text-green-400"
               : log.type === "error"
                 ? "text-red-400"
                 : "text-slate-300"
-          }
+          }`}
         >
           {log.message}
         </p>

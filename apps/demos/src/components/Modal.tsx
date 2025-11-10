@@ -28,7 +28,7 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
     >
       <div
         className="
-          bg-primary border border-default rounded-xl
+          bg-secondary border border-default rounded-xl
           max-w-sm w-[90%] p-8
         "
         onClick={(e) => e.stopPropagation()} // prevent close when clicking modal

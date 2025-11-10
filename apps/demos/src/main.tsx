@@ -4,6 +4,8 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { App } from "./App";
 
+document.documentElement.setAttribute("data-theme", "light-cosmic");
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>

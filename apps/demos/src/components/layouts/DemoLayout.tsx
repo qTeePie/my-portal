@@ -24,10 +24,10 @@ export const DemoLayout = ({
   return (
     <div
       className="
-          min-h-screen flex flex-col items-center px-6 py-10 fade-in"
+          min-h-screen flex flex-col items-center py-10 fade-in"
     >
       {/* TOPBAR */}
-      <header className="w-full max-w-4xl flex justify-between items-center mb-4 text-sm text-dim">
+      <header className="w-full max-w-4xl flex justify-between items-center px-6 mb-4 text-sm text-dim">
         <button onClick={() => navigate(-1)} className="ink">
           ← Back
         </button>
@@ -40,7 +40,7 @@ export const DemoLayout = ({
         <p className="text-dim text-sm">{desc}</p>
 
         {/* DEMO CONTAINER */}
-        <div className="w-full border border-soft rounded-xl p-6 bg-surface backdrop-blur-sm">
+        <div className="w-full border border-soft rounded-xl p-6 bg-black/40 backdrop-blur-sm">
           {children}
         </div>
 

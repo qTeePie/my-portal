@@ -61,23 +61,36 @@ export const readOwnerOf = async (tokenId: bigint) => {
   }
 };
 
-export const useBalanceOf = () => {
-  const {
-    data: balanceOf,
-    isPending,
-    isError,
-    error,
-    refetch,
-  } = useReadContract({
-    ...mini721ContractConfig,
-    functionName: "balanceOf",
-    query: { enabled: false },
-  });
+export const readBalanceOf = async (address: string) => {
+  try {
+    const balance = await readContract(config, {
+      ...mini721ContractConfig,
+      functionName: "balanceOf",
+      args: [address],
+    } as any); // typescript complains about auth list
 
-  const readBalanceOf = async (owner: `0x${string}`) => {
-    const result = await (refetch as any)({ args: [owner] });
-    return result.data;
-  };
+    return balance;
+  } catch (err) {
+    console.error("❌ Failed to read balance:", err);
+    return null;
+  }
+};
 
-  return { balanceOf, isPending, isError, error, readBalanceOf };
+export const fetchMyTokens = async (address: `0x${string}`) => {
+  const supply = await useTotalSupply().readTotalSupply();
+  const total = Number(supply.data || 0);
+  const myTokens: bigint[] = [];
+
+  for (let i = 1; i <= total; i++) {
+    try {
+      const owner = await readOwnerOf(BigInt(i));
+      if (owner?.toLowerCase() === address.toLowerCase()) {
+        myTokens.push(BigInt(i));
+      }
+    } catch (err) {
+      console.warn(`❌ failed reading token ${i}`, err);
+    }
+  }
+
+  return myTokens;
 };

@@ -3,7 +3,7 @@ export const demos = [
     id: "miniNFT",
     img: "nft",
     title: "YUL MiniNFT",
-    desc: "Minimal NFT in raw Yul assembly.",
+    desc: "Minimal NFT in pure Yul assembly.",
   },
   {
     id: "swap-ui",

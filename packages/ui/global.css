@@ -35,60 +35,75 @@
 /* -------------------------------------------------
    DARK THEME (default)
 ---------------------------------------------------*/
-:root {
-  color-scheme: dark;
+:root[data-theme="light-cosmic"] {
+  color-scheme: light;
 
-  --bg-primary: #100e30;  
-  --bg-secondary: #17104a;
-  --bg-surface: #0a071c;
+  /* backgrounds — lighter, gentle indigo wash */
+  --bg-primary: #dfe1ff;      /* pastel indigo canvas */
+  --bg-secondary: #e8e9ff;    /* slightly cooler lavender */
+  --bg-surface: #f5f5ff;      /* near white surface with a blue tint */
 
-  --bg-muted: rgba(120, 140, 255, 0.06);
+  --bg-muted: rgba(94, 107, 255, 0.06);
 
-  --text-primary: rgba(255, 255, 255, 0.90);
-  --text-muted: rgba(255, 255, 255, 0.62);
+  /* text — dark ink but soft */
+  --text-primary: #1a1440;
+  --text-muted: rgba(26, 20, 64, 0.6);
 
-  --border-default: rgba(148, 163, 184, 0.20);
-  --border-soft: rgba(120, 140, 255, 0.18);
+  /* borders — faint periwinkle edges */
+  --border-default: rgba(94, 107, 255, 0.20);
+  --border-soft: rgba(94, 107, 255, 0.12);
 
+  /* accents — radiant but balanced */
   --accent: #5e6bff;
-  --accent-weak: rgba(80, 100, 255, 0.16);
+  --accent-weak: rgba(80, 100, 255, 0.18);
 
-  --panel-shadow: 0 0 40px rgba(94, 107, 255, 0.25);
-
+  --panel-shadow: 0 0 30px rgba(94, 107, 255, 0.18);
 
   --bg-hero: linear-gradient(
     135deg,
-    #000000 0%,
-    #000103 12%,
-    #000307 26%,
-    #00040a 40%,
-    #000614 56%,
-    #01081c 72%,
-    #020b24 86%,
-    #000306 100%
+    #ffffff 0%,
+    #f4f5ff 20%,
+    #eceeff 40%,
+    #e0e3ff 60%,
+    #d7daff 80%,
+    #e3e5ff 100%
   );
 }
 
 /* -------------------------------------------------
    LIGHT THEME (optional)
 ---------------------------------------------------*/
-:root[data-theme="light"] {
-  color-scheme: light;
+:root[data-theme="dark-cosmic"] {
+  color-scheme: dark;
 
-  --bg-primary: #f7fafc;
-  --bg-secondary: #ffffff;
-  --bg-surface: #f4f6fb;
-  --bg-muted: rgba(59, 130, 246, 0.04);
+  --bg-primary: #08071a;      /* near-black indigo core */
+  --bg-secondary: #0d0b2a;    /* subtle purple hue */
+  --bg-surface: #0a0921;      /* panels & cards */
+  --bg-muted: rgba(94, 107, 255, 0.08); /* faint nebula mist */
 
-  --text-primary: #0b1220;
-  --text-muted: rgba(11, 18, 32, 0.62);
+  --text-primary: rgba(255, 255, 255, 0.94);
+  --text-muted: rgba(210, 220, 255, 0.62);
 
-  --border-default: rgba(15, 23, 42, 0.12);
-  --border-soft: rgba(59, 130, 246, 0.18);
+  --border-default: rgba(120, 140, 255, 0.16);
+  --border-soft: rgba(120, 140, 255, 0.10);
 
-  --accent: #3b82f6;
-  --accent-weak: rgba(59, 130, 246, 0.10);
+  --accent: #6d75ff; /* your core glow */
+  --accent-weak: rgba(109, 117, 255, 0.14);
+  --accent-cyan: #4dd9ff; /* optional subtle companion accent */
+
+  --panel-shadow: 0 0 60px rgba(80, 100, 255, 0.18),
+                  0 0 120px rgba(77, 217, 255, 0.08);
+
+  --bg-hero: linear-gradient(
+    135deg,
+    #01030a 0%,
+    #05081a 20%,
+    #080b2c 45%,
+    #0c1045 70%,
+    #05081f 100%
+  );
 }
+
 
 /* -------------------------------------------------
    BASE ELEMENTS
@@ -263,6 +278,16 @@ body {
     50% { opacity: 1; text-shadow: 0 0 12px var(--accent); }
   }
 
+  .token-action {
+    color: var(--accent);
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .token-action:hover {
+    text-shadow: 0 0 6px currentColor;
+  }
 }
 
 /* -------------------------------------------------
@@ -290,6 +315,22 @@ body {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+.log-line {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 
 /* -------------------------------------------------
    SMALL HELPERS

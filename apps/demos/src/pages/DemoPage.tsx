@@ -7,8 +7,8 @@ import { useAccount } from "wagmi";
 import {
   useSvg,
   useTotalSupply,
-  useBalanceOf,
   readOwnerOf,
+  readBalanceOf,
 } from "../web3/miniNFT/read";
 import { useMint } from "../web3/miniNFT/write";
 
@@ -53,22 +53,34 @@ export const DemoPage = () => {
 
   // READ FROM CONTARCT STUFF
   const { readTotalSupply } = useTotalSupply();
-  const { readBalanceOf } = useBalanceOf();
 
-  const [showReadModal, setShowReadModal] = useState(false);
-  const [activeRead, setActiveRead] = useState<"ownerOf" | "balanceOf" | null>(
-    null,
-  );
+  const [modal, setModal] = useState<{
+    open: boolean;
+    action: "ownerOf" | "balanceOf" | "mint" | null;
+  }>({
+    open: false,
+    action: null,
+  });
+
   const [readArgument, setReadArgument] = useState("");
 
-  const readModes = {
+  const actions = {
+    mint: {
+      label: "Mint to which address?",
+      placeholder: "address",
+      button: "Mint",
+      action: async (input: string) => {
+        mint(input as `0x${string}`);
+        return `🎨 Minted to ${input}`;
+      },
+    },
     ownerOf: {
       label: "Owner of which token?",
       placeholder: "tokenId",
       button: "Read Owner",
       action: async (input: string) => {
         const owner = await readOwnerOf(BigInt(input));
-        return `🔍 Owner of = ${owner}`;
+        return `🔍 Owner = ${owner}`;
       },
     },
     balanceOf: {
@@ -81,7 +93,8 @@ export const DemoPage = () => {
       },
     },
   } as const;
-  const mode = activeRead ? readModes[activeRead] : null;
+
+  const mode = modal.action ? actions[modal.action] : null;
 
   // OUTPUTS
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -104,7 +117,7 @@ export const DemoPage = () => {
         <div className="flex flex-col items-center gap-6">
           {/* Actinon Buttons */}
           <div className="flex flex-row items-center gap-3 ">
-            {/* ✅ PRIMARY MINT BUTTON */}
+            {/* PRIMARY MINT BUTTON */}
             <button
               disabled={status === "pending"}
               onClick={() => setShowMintModal(true)}
@@ -130,8 +143,7 @@ export const DemoPage = () => {
             {/* OWNER OF */}
             <button
               onClick={() => {
-                setShowReadModal(true);
-                setActiveRead("ownerOf");
+                setModal({ open: true, action: "ownerOf" });
               }}
               className="btn btn-secondary flex items-center gap-2"
             >
@@ -141,8 +153,7 @@ export const DemoPage = () => {
             {/* BALANCE OF */}
             <button
               onClick={() => {
-                setShowReadModal(true);
-                setActiveRead("balanceOf");
+                setModal({ open: true, action: "balanceOf" });
               }}
               className="btn btn-secondary flex items-center gap-2"
             >
@@ -166,9 +177,13 @@ export const DemoPage = () => {
                 <img width={160} src={svg} alt="NFT preview" />
                 <div className="flex flex-col gap-1 text-md">
                   <span>Token #3 • Owner: 0x1234…abcd</span>
-                  <div className="flex justify-around">
-                    <span className="text-pink">[ Transfer ]</span>
-                    <span className="text-mango">[ Change NFT Color ]</span>
+                  <div className="flex gap-2">
+                    <button className="token-action text-pink">
+                      [ Transfer ]
+                    </button>
+                    <button className="token-action text-mango">
+                      [ Change NFT Color ]
+                    </button>
                   </div>
                 </div>
               </div>
@@ -179,7 +194,7 @@ export const DemoPage = () => {
           <ActionLog logs={logs} />
 
           {/* About & Specs */}
-          <div className="flex flex-col gap-4 w-1/2 text-start">
+          <div className="flex flex-col gap-4 w-1/2 min-w-[320px] text-start">
             {/* Seperator */}
             <div className="h-[1px] bg-secondary" />
 
@@ -213,7 +228,9 @@ export const DemoPage = () => {
               </li>
             </ul>
           </div>
-          <div className="border-t border-b border-soft text-accent my-4 px-2 py-4">
+
+          {/* DISCLAIMER */}
+          <div className="border-t border-b border-soft text-accent my-6 px-2 py-4">
             <p>
               ⚠ <strong>NB:</strong> Though MiniNFT is an NFT, it does not
               comply with the ERC721 standard.
@@ -223,6 +240,7 @@ export const DemoPage = () => {
         </div>
       </DemoLayout>
 
+      {/* MODAL */}
       <Modal isOpen={showMintModal} onClose={() => setShowMintModal(false)}>
         <div className="flex flex-col items-center gap-4">
           <NFTCarosel items={previewNFTs} index={index} onChange={setIndex} />
@@ -235,37 +253,57 @@ export const DemoPage = () => {
         </div>
       </Modal>
       {mode && (
-        <Modal isOpen={showReadModal} onClose={() => setShowReadModal(false)}>
-          <div className="flex flex-col items-center gap-4">
-            <div className="flex flex-col gap-4 self-stretch mx-4 my-2">
-              <span>{mode.label}</span>
-              <input
-                placeholder={mode.placeholder}
-                onChange={(e) => setReadArgument(e.target.value)}
-                className="
+        <Modal
+          isOpen={modal.open}
+          onClose={() => setModal({ open: false, action: null })}
+        >
+          {modal.action === "mint" ? (
+            <div className="flex flex-col items-center gap-4">
+              <NFTCarosel
+                items={previewNFTs}
+                index={index}
+                onChange={setIndex}
+              />
+              <button
+                className="btn btn-primary mt-3"
+                onClick={() => mint(address)}
+              >
+                Mint Selected
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex flex-col gap-4 self-stretch mx-4 my-2">
+                <span>{mode.label}</span>
+                <input
+                  placeholder={mode.placeholder}
+                  onChange={(e) => setReadArgument(e.target.value)}
+                  className="
                   input input-primary 
                   border border-soft rounded-lg p-1
                   bg-black/30
                 "
-              />
+                />
+              </div>
+              <button
+                onClick={async () => {
+                  setModal({ open: false, action: null });
+                  try {
+                    const msg = await mode.action(readArgument);
+                    pushLog({ type: "info", message: msg });
+                  } catch (err) {
+                    pushLog({
+                      type: "error",
+                      message: `❌ ${(err as Error).message || "Action failed"}`,
+                    });
+                  }
+                }}
+                className="btn btn-secondary"
+              >
+                {mode.button}
+              </button>
             </div>
-            <button
-              onClick={async () => {
-                try {
-                  const msg = await mode.action(readArgument);
-                  pushLog({ type: "info", message: msg });
-                } catch (err) {
-                  pushLog({
-                    type: "error",
-                    message: `❌ ${(err as Error).message || "Action failed"}`,
-                  });
-                }
-              }}
-              className="btn btn-secondary"
-            >
-              {mode.button}
-            </button>
-          </div>
+          )}
         </Modal>
       )}
     </>
