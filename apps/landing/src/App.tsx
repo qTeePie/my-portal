@@ -1,5 +1,5 @@
 import blockSvg from "@/assets/icons/blocks.svg";
-import { DemoCard } from "./components/organisms/DemoCard";
+import { DemoCard } from "./components/DemoCard";
 
 const demos = [
   {
