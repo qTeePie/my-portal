@@ -20,20 +20,23 @@ import { DemoLayout } from "../components/layouts/DemoLayout";
 
 import { NFTCarosel } from "../components/NFTCarosel";
 import { Modal } from "../components/Modal";
-import { ActionLog } from "../components/ActionLog";
 
-import type { LogEntry } from "../components/ActionLog";
 import type { UI_NFT } from "../data/UI_NFT";
 
-export const previewNFTs: UI_NFT[] = [
-  { label: "ICE", svg: "/icons/tmp/ICE.svg" },
-  { label: "EMERALD", svg: "/icons/tmp/EMERALD.svg" },
-  { label: "COPPER", svg: "/icons/tmp/COPPER.svg" },
+const previewNFTs: UI_NFT[] = [
+  { label: "ICE", svg: "/icons/miniNFT/ICE.svg" },
+  { label: "EMERALD", svg: "/icons/miniNFT/EMERALD.svg" },
+  { label: "COPPER", svg: "/icons/miniNFT/COPPER.svg" },
 ];
+
+export type LogEntry = {
+  type: "success" | "error" | "info";
+  message: string;
+};
 
 // ❗ TODO: for write events [Gas Usage] in log entry
 export const DemoPage = () => {
-  const { address, isConnected } = useAccount();
+  const { address: wallet, isConnected } = useAccount();
 
   const { demoId } = useParams();
   const demo = demos.find((d) => d.id === demoId);
@@ -44,7 +47,7 @@ export const DemoPage = () => {
     );
   }
 
-  if (!isConnected || !address) {
+  if (!isConnected || !wallet) {
     return <p className="text-center mt-10">Please connect a wallet first.</p>;
   }
 
@@ -52,14 +55,14 @@ export const DemoPage = () => {
   const [myNFTs, setMyNFTs] = useState<UI_NFT[]>([]);
 
   useEffect(() => {
-    if (!address) {
+    if (!wallet) {
       setMyNFTs([]); // clear NFTs when wallet disconnects
       return;
     }
 
     const loadNFTs = async () => {
       try {
-        const tokens = await fetchMyTokens(address);
+        const tokens = await fetchMyTokens(wallet);
 
         const ownedNFTs = await Promise.all(
           tokens.map(async (id) => {
@@ -80,13 +83,13 @@ export const DemoPage = () => {
     };
 
     loadNFTs();
-  }, [address]);
+  }, [wallet]);
 
   const [indexNFTMint, setIndexNFTMint] = useState(0); // for modal nft carosel
   const [indexActiveNFT, setIndexActiveNFT] = useState(0);
 
   // WRITE TO CONTARCT STUFF
-  const { mint, status } = useMint(address);
+  const { mint, status } = useMint(wallet);
   const [showMintModal, setShowMintModal] = useState(false);
 
   // READ FROM CONTARCT STUFF
@@ -231,14 +234,17 @@ export const DemoPage = () => {
             className="
               w-80 h-80
               border border-default rounded-lg
-              bg-black/30
             "
           >
             {myNFTs.length === 0 ? (
               <p>Loading SVG...</p>
             ) : (
               <div className="flex flex-col justify-center items-center gap-4">
-                <NFTCarosel items={myNFTs} index={indexActiveNFT} onChange={setIndexActiveNFT} />
+                <NFTCarosel
+                  items={myNFTs}
+                  index={indexActiveNFT}
+                  onChange={setIndexActiveNFT}
+                />
                 <div className="flex flex-col gap-1 text-md">
                   {/* <span>Token #3 • Owner: 0x1234…abcd</span> */}
                   <div className="flex gap-2">
@@ -255,7 +261,33 @@ export const DemoPage = () => {
           </div>
 
           {/* Action Log / Status Box */}
-          <ActionLog logs={logs} />
+          <div
+            className="
+              h-40 w-80
+              text-sm text-start 
+              border border-default rounded-lg 
+              overflow-y-auto overflow-x-hidden p-2
+              "
+          >
+            {logs.length === 0 && (
+              <p className="text-subtle text-center mt-2">No actions yet...</p>
+            )}
+
+            {logs.map((log, i) => (
+              <p
+                key={i}
+                className={`log-line ${
+                  log.type === "success"
+                    ? "text-green-400"
+                    : log.type === "error"
+                      ? "text-red-400"
+                      : "text-slate-300"
+                }`}
+              >
+                {log.message}
+              </p>
+            ))}
+          </div>
 
           {/* About & Specs */}
           <div className="flex flex-col gap-4 w-1/2 min-w-[320px] text-start">
@@ -287,7 +319,7 @@ export const DemoPage = () => {
                 Storage
                 <ul className="not-list-cyber list-sub py-1 text-sm text-muted">
                   <li>2 x mappings</li>
-                  <li>1 x uint256 packed with Supply + Flags</li>
+                  <li>1 x uint256 bitpacked</li>
                 </ul>
               </li>
             </ul>
@@ -307,11 +339,12 @@ export const DemoPage = () => {
       {/* MODAL */}
       <Modal isOpen={showMintModal} onClose={() => setShowMintModal(false)}>
         <div className="flex flex-col items-center gap-4">
-          <NFTCarosel items={previewNFTs} index={indexNFTMint} onChange={setIndexNFTMint} />
-          <button
-            className="btn btn-primary mt-3"
-            onClick={() => mint(address)}
-          >
+          <NFTCarosel
+            items={previewNFTs}
+            index={indexNFTMint}
+            onChange={setIndexNFTMint}
+          />
+          <button className="btn btn-primary mt-3" onClick={() => mint(wallet)}>
             Mint Selected
           </button>
         </div>
@@ -330,7 +363,7 @@ export const DemoPage = () => {
               />
               <button
                 className="btn btn-primary mt-3"
-                onClick={() => mint(address)}
+                onClick={() => mint(wallet)}
               >
                 Mint Selected
               </button>

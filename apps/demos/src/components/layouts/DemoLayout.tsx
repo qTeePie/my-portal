@@ -11,6 +11,24 @@ type DemoLayoutProps = {
   contractUrl?: string;
 };
 
+const headerActions = [
+  {
+    logo: "icons/code_brackets.svg",
+    link: "",
+    alt: "Contract Code",
+  },
+  {
+    logo: "/icons/github.svg",
+    link: "https://github.com/qTeePie/yul-miniNFT",
+    alt: "Github Repository",
+  },
+  {
+    logo: "/icons/chain.svg",
+    link: "https://etherscan.io/",
+    alt: "NFT etherscan link",
+  },
+];
+
 export const DemoLayout = ({
   title,
   desc,
@@ -24,21 +42,35 @@ export const DemoLayout = ({
   return (
     <div
       className="
-          min-h-screen flex flex-col items-center py-10 fade-in"
+          min-h-screen flex flex-col items-center py-8 fade-in"
     >
       {/* TOPBAR */}
       <header className="w-full max-w-4xl flex justify-between items-center px-6 mb-4 text-sm text-dim">
         <button onClick={() => navigate(-1)} className="ink">
           ← Back
         </button>
+        <div className="flex gap-2">
+          {headerActions.map((item, i) => (
+            <a
+              key={i}
+              href={item.link}
+              target="_blank"
+              className="
+                w-12 h-12 rounded-full overflow-hidden  
+                hover:scale-105 transition-transform border border-soft"
+            >
+              <img src={item.logo} alt={item.alt} className="object-cover" />
+            </a>
+          ))}
+        </div>
         <span className="opacity-60">A2Z Blocks</span>
       </header>
 
       {/* MAIN CONTENT */}
-      <main className="w-full max-w-3xl flex flex-col items-center gap-6">
+      <main className="w-full max-w-3xl flex flex-col items-center gap-4">
         <h1 className="text-2xl font-semibold glow">{title}</h1>
         <p className="text-dim text-sm">{desc}</p>
-        
+
         {/* DEMO CONTAINER */}
         <div className="w-full border border-default rounded-xl p-6 bg-black/30 backdrop-blur-sm">
           {children}
