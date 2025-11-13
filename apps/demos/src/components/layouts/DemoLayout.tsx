@@ -44,7 +44,7 @@ export const DemoLayout = ({
   return (
     <div
       className="
-          min-h-screen flex flex-col items-center py-8 fade-in"
+          min-h-screen flex flex-col gap-2 items-center py-8 fade-in"
     >
       {/* TOPBAR */}
       <header className="w-full max-w-4xl flex justify-between items-center px-4 mb-4 text-sm">
@@ -62,7 +62,11 @@ export const DemoLayout = ({
                 onClick={item.onClick}
                 className={`${commonClasses} cursor-pointer`}
               >
-                <img src={item.logo} alt={item.alt} className="w-full h-full object-cover" />
+                <img
+                  src={item.logo}
+                  alt={item.alt}
+                  className="w-full h-full object-cover"
+                />
               </button>
             ) : (
               <a
@@ -71,11 +75,14 @@ export const DemoLayout = ({
                 target="_blank"
                 className={commonClasses}
               >
-                <img src={item.logo} alt={item.alt} className="w-full h-full object-cover" />
+                <img
+                  src={item.logo}
+                  alt={item.alt}
+                  className="w-full h-full object-cover"
+                />
               </a>
             );
           })}
-
         </div>
         <span className="opacity-60">A2Z Blocks</span>
       </header>

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { isAddress } from "viem";
+import { toHex } from "viem";
 
 // local
 import {
@@ -36,6 +37,10 @@ export type LogEntry = {
 
 // ❗ TODO: for write events [Gas Usage] in log entry
 export const DemoPage = () => {
+  const hex = toHex("8080"); // use this to pass colors to mint
+  console.log(hex);
+  // → "0x38303830"
+
   const { address: wallet, isConnected } = useAccount();
 
   const { demoId } = useParams();
@@ -88,11 +93,7 @@ export const DemoPage = () => {
   const [indexNFTMint, setIndexNFTMint] = useState(0); // for modal nft carosel
   const [indexActiveNFT, setIndexActiveNFT] = useState(0);
 
-  // WRITE TO CONTARCT STUFF
   const { mint, status } = useMint(wallet);
-  const [showMintModal, setShowMintModal] = useState(false);
-
-  // READ FROM CONTARCT STUFF
   const { readTotalSupply } = useTotalSupply();
 
   const [modal, setModal] = useState<{
@@ -103,6 +104,9 @@ export const DemoPage = () => {
     action: null,
   });
 
+  // for custom RBG input
+  const [showRGB, setShowRGB] = useState(false);
+
   const [readArgument, setReadArgument] = useState("");
 
   const actions = {
@@ -112,7 +116,7 @@ export const DemoPage = () => {
       button: "Mint",
       action: async (input: string) => {
         mint(input as `0x${string}`);
-        return `🎨 Minted to ${input}`;
+        return `⛏ Minted to ${input}`;
       },
     },
     ownerOf: {
@@ -188,7 +192,9 @@ export const DemoPage = () => {
             {/* PRIMARY MINT BUTTON */}
             <button
               disabled={status === "pending"}
-              onClick={() => setShowMintModal(true)}
+              onClick={() => {
+                setModal({ open: true, action: "mint" });
+              }}
               className="btn btn-primary flex items-center gap-2"
             >
               ⛏ Mint New
@@ -249,9 +255,7 @@ export const DemoPage = () => {
                 <div className="flex flex-col gap-1 text-md">
                   {/* <span>Token #3 • Owner: 0x1234…abcd</span> */}
                   <div className="flex gap-2">
-                    <button className="token-action">
-                      [ Transfer ]
-                    </button>
+                    <button className="token-action">[ Transfer ]</button>
                     <button className="token-action">
                       [ Change NFT Color ]
                     </button>
@@ -338,18 +342,6 @@ export const DemoPage = () => {
       </DemoLayout>
 
       {/* MODAL */}
-      <Modal isOpen={showMintModal} onClose={() => setShowMintModal(false)}>
-        <div className="flex flex-col items-center gap-4">
-          <NFTCarosel
-            items={previewNFTs}
-            index={indexNFTMint}
-            onChange={setIndexNFTMint}
-          />
-          <button className="btn btn-primary mt-3" onClick={() => mint(wallet)}>
-            Mint Selected
-          </button>
-        </div>
-      </Modal>
       {mode && (
         <Modal
           isOpen={modal.open}
@@ -357,17 +349,91 @@ export const DemoPage = () => {
         >
           {modal.action === "mint" ? (
             <div className="flex flex-col items-center gap-4">
-              <NFTCarosel
-                items={previewNFTs}
-                index={indexNFTMint}
-                onChange={setIndexNFTMint}
-              />
-              <button
-                className="btn btn-primary mt-3"
-                onClick={() => mint(wallet)}
-              >
-                Mint Selected
-              </button>
+              {showRGB ? (
+                /* RGB FORM */
+                <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
+                  <label className="flex flex-col text-sm text-white/80">
+                    <span>Red</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="255"
+                      className="px-3 py-2 rounded-lg bg-[var(--bg-surface)]
+                       border border-[var(--border-soft)]
+                       text-white/90"
+                    />
+                  </label>
+
+                  <label className="flex flex-col text-sm text-white/80">
+                    <span>Green</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="255"
+                      className="px-3 py-2 rounded-lg bg-[var(--bg-surface)]
+                       border border-[var(--border-soft)]
+                       text-white/90"
+                    />
+                  </label>
+
+                  <label className="flex flex-col text-sm text-white/80">
+                    <span>Blue</span>
+                    <input
+                      type="number"
+                      min="0"
+                      max="255"
+                      className="px-3 py-2 rounded-lg bg-[var(--bg-surface)]
+                       border border-[var(--border-soft)]
+                       text-white/90"
+                    />
+                  </label>
+
+                  <div className="mt-2 p-[1px] rounded-xl bg-[linear-gradient(90deg,rgb(255,60,120),rgb(80,200,255),rgb(120,255,150))]">
+                    <button
+                      className="px-4 py-2 w-full rounded-xl font-semibold
+                       bg-[var(--bg-primary)] text-white/90 active:scale-95 transition-all"
+                    >
+                      Mint Custom Mini
+                    </button>
+                  </div>
+                  <strong>OR</strong>
+                  <button
+                    className="btn btn-secondary self-center"
+                    onClick={() => setShowRGB(false)}
+                  >
+                    Browse Defaults
+                  </button>
+                </div>
+              ) : (
+                /* CAROUSEL */
+                <div className="flex flex-col items-center gap-4">
+                  <NFTCarosel
+                    items={previewNFTs}
+                    index={indexNFTMint}
+                    onChange={setIndexNFTMint}
+                  />
+
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={() => mint(wallet)}
+                  >
+                    Mint Selected
+                  </button>
+
+                  <strong>OR</strong>
+
+                  <div className="p-[1px] rounded-xl bg-[linear-gradient(90deg,rgb(255,60,120),rgb(80,200,255),rgb(120,255,150))]">
+                    <button
+                      onClick={() => setShowRGB(true)}
+                      className="px-4 py-2 rounded-xl font-semibold
+                       bg-[var(--bg-primary)] text-white/90
+                       w-full transition-all duration-300 active:scale-95 cursor-pointer"
+                    >
+                      Custom RGB
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex flex-col items-center gap-4">
